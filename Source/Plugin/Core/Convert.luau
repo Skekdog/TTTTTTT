@@ -17,7 +17,7 @@ local map: Types.MapDefinition = {
 		["1:1"] = [ICON],
 	},
 
-	Gravity = 80,
+	Gravity = [GRAVITY],
 
 	LightingSettings = {
 		[LIGHTING]
@@ -153,6 +153,8 @@ local function Convert(oldMap: Instance): ModuleScript | string
 	props.Name = "Props"
 	props.Parent = newMap
 
+	local gravity = 80
+
 	local workspaceFolder = oldFolder:FindFirstChild("Workspace")
 	if workspaceFolder then
 		local actionFolder = workspaceFolder:FindFirstChild("Action")
@@ -190,7 +192,16 @@ local function Convert(oldMap: Instance): ModuleScript | string
 		if itemsFolder then
 			ConvertItemsFolder(itemsFolder, itemSpawns, ammoSpawns)
 		end
+
+		local gravityAttr = workspaceFolder:GetAttribute("Gravity")
+		if typeof(gravityAttr) == "number" then
+			gravity = gravityAttr
+		elseif gravityAttr ~= nil then
+			warn(`Unknown Gravity attribute type: {gravityAttr}`)
+		end
 	end
+
+	gravity = Codify(gravity) or "80"
 
 	local spawnsFolder = oldFolder:FindFirstChild("Spawns")
 	if spawnsFolder then
@@ -223,6 +234,7 @@ local function Convert(oldMap: Instance): ModuleScript | string
 		:gsub("%[WATER%]", waterString)
 		:gsub("%[TERRAIN%]", terrainString)
 		:gsub("%[CUSTOMITEMS%]", customItemsString)
+		:gsub("%[GRAVITY%]", gravity)
 	newMap.Source = mapScript
 
 	newMap.Name = name
