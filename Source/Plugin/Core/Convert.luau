@@ -1,5 +1,6 @@
 local Codify = require("../../Lib/Codify")
 local ConvertCustomItems = require("./ConvertCustomItems")
+local ConvertDoorsFolder = require("./ConvertDoorsFolder")
 local ConvertItemsFolder = require("./ConvertItemsFolder")
 local ConvertPropsFolder = require("./ConvertPropsFolder")
 local ConvertSpawnsFolder = require("./ConvertSpawnsFolder")
@@ -163,9 +164,7 @@ local function Convert(oldMap: Instance): ModuleScript | string
 
 		local doorsFolder = workspaceFolder:FindFirstChild("Doors")
 		if doorsFolder then
-			for _, v in doorsFolder:GetChildren() do
-				v:Clone().Parent = doors
-			end
+			ConvertDoorsFolder(doorsFolder, doors)
 		end
 
 		local boundsFolder = workspaceFolder:FindFirstChild("Bounds")
