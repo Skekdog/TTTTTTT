@@ -4,15 +4,17 @@ local function ConvertCustomItems(customItems: Instance, staticMap: Folder): str
 	local items = {}
 	for _, item in customItems:GetChildren() do
 		local itemDefinition = {}
-		itemDefinition.Kind = "Item"
+		itemDefinition.Kind = `Item" :: "Item`
 		itemDefinition.Name = item.Name
 		itemDefinition.CanDrop = true
 
 		local worldModel = item:FindFirstChild("WorldModel")
 		if worldModel then
 			if worldModel:IsA("BasePart") then
-				worldModel:Clone().Parent = staticMap
-				itemDefinition.Model = worldModel.Name
+				worldModel = worldModel:Clone()
+				worldModel.Name = item.Name .. "WorldModel"
+				worldModel.Parent = staticMap
+				itemDefinition.Model = {__CodifyCode = `script.StaticMap.{worldModel.Name}`}
 			else
 				warn(`Unknown WorldModel type {worldModel.ClassName} for Custom Item {item.Name}`)
 			end

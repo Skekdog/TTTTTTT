@@ -10,11 +10,15 @@ local function Codify(value: any): string?
 	elseif typeof(value) == "boolean" then
 		valueString = tostring(value)
 	elseif typeof(value) == "table" then
-		valueString = "{"
-		for i, v in value do
-			valueString ..= `\n[{Codify(i)}] = {Codify(v)},`
+		if typeof(value.__CodifyCode) == "string" then
+			valueString = value.__CodifyCode
+		else
+			valueString = "{"
+			for i, v in value do
+				valueString ..= `\n[{Codify(i)}] = {Codify(v)},`
+			end
+			valueString ..= "\n}"
 		end
-		valueString ..= "\n}"
 	end
 
 	return valueString
