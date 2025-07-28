@@ -7,6 +7,7 @@ local function ConvertCustomItems(customItems: Instance, staticMap: Folder): str
 		itemDefinition.Kind = `Item" :: "Item`
 		itemDefinition.Name = item.Name
 		itemDefinition.CanDrop = true
+		itemDefinition.Slot = 9
 
 		local worldModel = item:FindFirstChild("WorldModel")
 		if worldModel then
