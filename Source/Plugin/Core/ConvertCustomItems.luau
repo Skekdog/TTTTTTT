@@ -12,7 +12,7 @@ local function ConvertCustomItems(customItems: Instance, staticMap: Folder): str
 		if worldModel then
 			if worldModel:IsA("BasePart") then
 				worldModel = worldModel:Clone()
-				worldModel.Name = item.Name .. "WorldModel"
+				worldModel.Name = item.Name
 				worldModel.Parent = staticMap
 				itemDefinition.Model = {__CodifyCode = `script.StaticMap.{worldModel.Name}`}
 			else
