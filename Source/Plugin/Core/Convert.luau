@@ -3,6 +3,7 @@ local ConvertCustomItems = require("./ConvertCustomItems")
 local ConvertDoorsFolder = require("./ConvertDoorsFolder")
 local ConvertItemsFolder = require("./ConvertItemsFolder")
 local ConvertPropsFolder = require("./ConvertPropsFolder")
+local ConvertScript = require("./ConvertScript")
 local ConvertSpawnsFolder = require("./ConvertSpawnsFolder")
 
 local mapScriptTemplate = [[
@@ -225,6 +226,12 @@ local function Convert(oldMap: Instance): ModuleScript | string
 	local windows = Instance.new("Folder")
 	windows.Name = "Windows"
 	windows.Parent = newMap
+
+	for _, v in newMap:GetDescendants() do
+		if v:IsA("Script") or v:IsA("LocalScript") or v:IsA("ModuleScript") then
+			ConvertScript(v)
+		end
+	end
 
 	local mapScript = mapScriptTemplate
 		:gsub("%[MAPNAME%]", Codify(name) or name)
