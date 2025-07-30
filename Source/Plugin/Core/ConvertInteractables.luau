@@ -68,6 +68,8 @@ local function convertOne(model: Model, interactablesFolder: Folder): any
 		definition.OnInteractClient = generateClientInteract(buttonClient)
 	end
 
+	model.Parent = nil
+
 	return definition
 end
 
