@@ -59,6 +59,14 @@ local function convertWorkspaceMapReferences(source: string): string
 	return converted
 end
 
+-- idk why but every tt2 map uses ReplicationFocus instead of just using Character?
+local function convertReplicationFocusUse(source: string): string
+	local converted = source
+		:gsub("ReplicationFocus", "Character")
+
+	return converted
+end
+
 local function ConvertScript(targetScript: Script | LocalScript | ModuleScript): ()
 	if targetScript:IsA("ModuleScript") then
 		targetScript.Name = nameRemap[targetScript.Name] or targetScript.Name
@@ -68,6 +76,7 @@ local function ConvertScript(targetScript: Script | LocalScript | ModuleScript):
 	source = convertCollisionGroups(source)
 	source = convertWorkspaceMapReferences(source)
 	source = convertBaseItemReferences(source)
+	source = convertReplicationFocusUse(source)
 
 	targetScript.Source = source
 end
