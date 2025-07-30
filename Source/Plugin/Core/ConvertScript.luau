@@ -1,5 +1,13 @@
 
+local nameRemap = {
+	OnDestroying = "OnBreak",
+}
+
 local function ConvertScript(targetScript: Script | LocalScript | ModuleScript): ()
+	if targetScript:IsA("ModuleScript") then
+		targetScript.Name = nameRemap[targetScript.Name] or targetScript.Name
+	end
+
 	targetScript.Source = targetScript.Source
 		:gsub("workspace.Map", "workspace.Map:WaitForChild(\"StaticMap\")")
 		:gsub("workspace:WaitForChild(\"Map\")", "workspace.Map:WaitForChild(\"StaticMap\")")
