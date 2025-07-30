@@ -1,6 +1,7 @@
 local Codify = require("../../Lib/Codify")
 local ConvertCustomItems = require("./ConvertCustomItems")
 local ConvertDoorsFolder = require("./ConvertDoorsFolder")
+local ConvertInteractables = require("./ConvertInteractables")
 local ConvertItemsFolder = require("./ConvertItemsFolder")
 local ConvertPropsFolder = require("./ConvertPropsFolder")
 local ConvertScript = require("./ConvertScript")
@@ -37,7 +38,7 @@ local map: Types.MapDefinition = {
 	AvailableItems = [CUSTOMITEMS],
 	AvailableAmmo = {},
 
-	InteractableDefinitions = {},
+	InteractableDefinitions = [INTERACTABLES],
 }
 
 return map
@@ -219,6 +220,8 @@ local function Convert(oldMap: Instance): ModuleScript | string
 	interactablesFolder.Name = "Interactables"
 	interactablesFolder.Parent = newMap
 
+	local interactablesString = ConvertInteractables(newMap, doors, interactablesFolder) or "{}"
+
 	local futureLightingModifiers = Instance.new("Folder")
 	futureLightingModifiers.Name = "FutureLightingModifiers"
 	futureLightingModifiers.Parent = newMap
@@ -242,6 +245,7 @@ local function Convert(oldMap: Instance): ModuleScript | string
 		:gsub("%[TERRAIN%]", terrainString)
 		:gsub("%[CUSTOMITEMS%]", customItemsString)
 		:gsub("%[GRAVITY%]", gravity)
+		:gsub("%[INTERACTABLES%]", interactablesString)
 	newMap.Source = mapScript
 
 	newMap.Name = name

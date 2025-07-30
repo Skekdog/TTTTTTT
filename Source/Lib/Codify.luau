@@ -6,7 +6,7 @@ local function Codify(value: any): string?
 	elseif typeof(value) == "number" then
 		valueString = tostring(value)
 	elseif typeof(value) == "string" then
-		valueString = `"{value}"`
+		valueString = ` [[{value}]] `
 	elseif typeof(value) == "boolean" then
 		valueString = tostring(value)
 	elseif typeof(value) == "table" then
