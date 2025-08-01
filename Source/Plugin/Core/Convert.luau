@@ -15,6 +15,10 @@ local map: Types.MapDefinition = {
 	Description = "No description",
 	Authors = [AUTHORS],
 
+	Extras = {
+		CompatibilityMode = true
+	},
+
 	MapIcons = {
 		["1:1"] = [ICON],
 	},
