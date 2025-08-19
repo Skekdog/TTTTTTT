@@ -5,7 +5,7 @@ local plugin = GetPlugin
 local module = {}
 
 local toolbar = plugin:CreateToolbar("TTTTTTT")
-local button = toolbar:CreateButton("Convert", "Converts the selected TT2 map into a TYT map", "rbxassetid://108635454194584")
+local button = toolbar:CreateButton("Convert", "Converts the selected TT2 map into a TYT map", "rbxassetid://121291792143201")
 button.ClickableWhenViewportHidden = true
 
 module.Toolbar = toolbar

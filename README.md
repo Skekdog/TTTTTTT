@@ -1,7 +1,7 @@
 # TTTTTTT
 ### Traitor Town Two To Traitor Town Three
 
-![Class Convert](./Assets/TTTTTTTWide.png)
+![Class Convert](./Assets/TTTTTTT.png)
 
 A Roblox Studio plugin that converts TT2 maps into TYT (TT3) maps. Obviously not perfect.
 
