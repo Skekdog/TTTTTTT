@@ -15,13 +15,15 @@ local function ConvertDoorsFolder(doorsFolder: Instance, dynamic: Folder): ()
 		local doorConfig = model:FindFirstChild("DoorConfig")
 		if doorConfig then
 			for i, v in doorConfig:GetAttributes() do
-				root:SetAttribute(i, v)
+				model:SetAttribute(i, v)
 			end
 
 			local sounds = doorConfig:FindFirstChild("Sounds")
 			if sounds then
-				sounds.Parent = root
+				sounds.Parent = model
 			end
+
+			doorConfig.Parent = nil
 		end
 
 		model:AddTag("Door")
