@@ -40,22 +40,22 @@ end
 
 local function convertWorkspaceMapReferences(source: string): string
 	local converted = source
-		:gsub('workspace.Map', 'workspace.Map:WaitForChild("Static")')
-		:gsub('workspace:WaitForChild("Map")', 'workspace.Map:WaitForChild("Static")')
-		:gsub('workspace.Items', 'workspace.Map:WaitForChild("Dynamic"):WaitForChild("Items")')
-		:gsub('workspace:WaitForChild("Items")', 'workspace.Map:WaitForChild("Dynamic"):WaitForChild("Items")')
-		:gsub('workspace.Bounds', 'workspace.Map:WaitForChild("Static"):WaitForChild("Bounds")')
-		:gsub('workspace:WaitForChild("Bounds")', 'workspace.Map:WaitForChild("Static"):WaitForChild("Bounds")')
-		:gsub('workspace.Action', 'workspace.Map:WaitForChild("Dynamic"):WaitForChild("Action")')
-		:gsub('workspace:WaitForChild("Action")', 'workspace.Map:WaitForChild("Dynamic"):WaitForChild("Action")')
-		:gsub('workspace.ActionItems', 'workspace.Map:WaitForChild("Dynamic"):WaitForChild("ActionItems")')
-		:gsub('workspace:WaitForChild("ActionItems")', 'workspace.Map:WaitForChild("Dynamic"):WaitForChild("ActionItems")')
-		:gsub('workspace.Props', 'workspace.Map:WaitForChild("Dynamic"):WaitForChild("Props")')
-		:gsub('workspace:WaitForChild("Props")', 'workspace.Map:WaitForChild("Dynamic"):WaitForChild("Props")')
-		:gsub('workspace._Local', 'workspace.Camera') -- todo: what is workspace._Local?
-		:gsub('workspace:WaitForChild("_Local")', 'workspace.Camera')
-		:gsub('workspace.Doors', 'workspace.Map:WaitForChild("Dynamic"):WaitForChild("Doors")')
-		:gsub('workspace:WaitForChild("Doors")', 'workspace.Map:WaitForChild("Dynamic"):WaitForChild("Doors")')
+		:gsub('workspace%.Map', 'workspace.Map:WaitForChild("Static")')
+		:gsub('workspace:WaitForChild%("Map"%)', 'workspace.Map:WaitForChild("Static")')
+		:gsub('workspace%.Items', 'workspace.Map:WaitForChild("Dynamic"):WaitForChild("Items")')
+		:gsub('workspace:WaitForChild%("Items"%)', 'workspace.Map:WaitForChild("Dynamic"):WaitForChild("Items")')
+		:gsub('workspace%.Bounds', 'workspace.Map:WaitForChild("Static"):WaitForChild("Bounds")')
+		:gsub('workspace:WaitForChild%("Bounds"%)', 'workspace.Map:WaitForChild("Static"):WaitForChild("Bounds")')
+		:gsub('workspace%.Action', 'workspace.Map:WaitForChild("Dynamic"):WaitForChild("Action")')
+		:gsub('workspace:WaitForChild%("Action"%)', 'workspace.Map:WaitForChild("Dynamic"):WaitForChild("Action")')
+		:gsub('workspace%.ActionItems', 'workspace.Map:WaitForChild("Dynamic"):WaitForChild("ActionItems")')
+		:gsub('workspace:WaitForChild%("ActionItems"%)', 'workspace.Map:WaitForChild("Dynamic"):WaitForChild("ActionItems")')
+		:gsub('workspace%.Props', 'workspace.Map:WaitForChild("Dynamic"):WaitForChild("Props")')
+		:gsub('workspace:WaitForChild%("Props"%)', 'workspace.Map:WaitForChild("Dynamic"):WaitForChild("Props")')
+		:gsub('workspace%._Local', 'workspace.Camera') -- todo: what is workspace._Local?
+		:gsub('workspace:WaitForChild%("_Local"%)', 'workspace.Camera')
+		:gsub('workspace%.Doors', 'workspace.Map:WaitForChild("Dynamic"):WaitForChild("Doors")')
+		:gsub('workspace:WaitForChild%("Doors"%)', 'workspace.Map:WaitForChild("Dynamic"):WaitForChild("Doors")')
 	return converted
 end
 
