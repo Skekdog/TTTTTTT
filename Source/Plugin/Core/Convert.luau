@@ -1,4 +1,5 @@
 local Codify = require("../../Lib/Codify")
+local ConvertBoundsFolder = require("./ConvertBoundsFolder")
 local ConvertCustomItems = require("./ConvertCustomItems")
 local ConvertDoorsFolder = require("./ConvertDoorsFolder")
 local ConvertInteractables = require("./ConvertInteractables")
@@ -159,7 +160,7 @@ local function Convert(oldMap: Instance): ModuleScript
 
 		local boundsFolder = workspaceFolder:FindFirstChild("Bounds")
 		if boundsFolder then
-			boundsFolder:Clone().Parent = staticMap
+			ConvertBoundsFolder(boundsFolder, staticMap)
 		end
 
 		local mapFolder = workspaceFolder:FindFirstChild("Map")
