@@ -3,8 +3,8 @@ local Codify = require("../../Lib/Codify")
 local function generateServerInteract(): {__CodifyCode: string}
 	return {__CodifyCode = [[
 		function(object: Types.Interactable, participant: Types.Participant)
-			if not object.Object:FindFirstChild("ButtonServer") then return end -- Some maps spawn the ModuleScript in at runtime
-			return (require)(object.Object.ButtonServer).Began(participant.Player, nil)
+			if not object.Model:FindFirstChild("ButtonServer") then return end -- Some maps spawn the ModuleScript in at runtime
+			return (require)(object.Model.ButtonServer).Began(participant.Player, nil)
 		end
 	]]}
 end
@@ -12,8 +12,8 @@ end
 local function generateClientInteract(): {__CodifyCode: string}
 	return {__CodifyCode = [[
 		function(object: Types.Interactable)
-			if not object.Object:FindFirstChild("ButtonClient") then return end
-			return (require)(object.Object.ButtonClient).Began()
+			if not object.Model:FindFirstChild("ButtonClient") then return end
+			return (require)(object.Model.ButtonClient).Began()
 		end
 	]]}
 end
