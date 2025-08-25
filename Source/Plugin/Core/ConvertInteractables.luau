@@ -21,9 +21,12 @@ end
 local function convertOne(model: Model, map: Instance): any
 	local newName = model.Name
 	local index = 0
-	while map:FindFirstChild(newName, true) do
+
+	local existing = map:FindFirstChild(newName, true)
+	while existing and existing ~= model do
 		newName = model.Name .. index
 		index += 1
+		existing = map:FindFirstChild(newName, true)
 		task.wait()
 	end
 
