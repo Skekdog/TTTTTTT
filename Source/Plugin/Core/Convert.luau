@@ -20,7 +20,7 @@ local map: Types.MapDefinition = {
 	},
 
 	MapIcons = {
-		["1:1"] = [ICON],
+		["16:9"] = [ICON],
 	},
 
 	Gravity = [GRAVITY],
@@ -43,15 +43,17 @@ local map: Types.MapDefinition = {
 	AvailableAmmo = {},
 
 	InteractableDefinitions = [INTERACTABLES],
+
+	Map = script,
 }
 
 return map
 ]]
 
-local function Convert(oldMap: Instance): ModuleScript | string
+local function Convert(oldMap: Instance): ModuleScript
 	local oldFolder = if oldMap:IsA("Folder") then oldMap else oldMap:FindFirstChildOfClass("Folder")
 	if not oldFolder then
-		return "Could not find map folder"
+		error("Could not find map folder")
 	end
 
 	local newMap = Instance.new("ModuleScript")
@@ -60,16 +62,16 @@ local function Convert(oldMap: Instance): ModuleScript | string
 	local creators = oldFolder:GetAttribute("Creator")
 
 	if typeof(creators) ~= "string" then
-		return if creators == nil then "Creator attribute not found" else "Creator attribute is not a string"
+		error(if creators == nil then "Creator attribute not found" else "Creator attribute is not a string")
 	end
 
 	local icon = oldFolder:GetAttribute("Icon")
 	if typeof(icon) ~= "string" then
-		return if icon == nil then "Icon attribute not found" else "Icon attribute is not a string"
+		error(if icon == nil then "Icon attribute not found" else "Icon attribute is not a string")
 	end
 
 	local newLighting = Instance.new("Folder")
-	newLighting.Name = "LightingModifiers"
+	newLighting.Name = "Lighting"
 	newLighting.Parent = newMap
 
 	local lightingString = ""
@@ -124,40 +126,22 @@ local function Convert(oldMap: Instance): ModuleScript | string
 
 	local terrainRegion = oldFolder:FindFirstChild("TerrainRegion")
 	if terrainRegion and terrainRegion:IsA("TerrainRegion") then
-		terrainRegion:Clone().Parent = newMap
+		terrainRegion = terrainRegion:Clone()
+		terrainRegion.Name = "Terrain"
+		terrainRegion.Parent = newMap
 	end
 
 	local dynamicMap = Instance.new("Folder")
-	dynamicMap.Name = "DynamicMap"
+	dynamicMap.Name = "Dynamic"
 	dynamicMap.Parent = newMap
 
-	local doors = Instance.new("Folder")
-	doors.Name = "Doors"
-	doors.Parent = dynamicMap
-
-	local bounds = Instance.new("Folder")
-	bounds.Name = "Bounds"
-	bounds.Parent = newMap
-
 	local staticMap = Instance.new("Folder")
-	staticMap.Name = "StaticMap"
+	staticMap.Name = "Static"
 	staticMap.Parent = newMap
-
-	local itemSpawns = Instance.new("Folder")
-	itemSpawns.Name = "ItemSpawns"
-	itemSpawns.Parent = newMap
-
-	local ammoSpawns = Instance.new("Folder")
-	ammoSpawns.Name = "AmmoSpawns"
-	ammoSpawns.Parent = newMap
 
 	local playerSpawns = Instance.new("Folder")
 	playerSpawns.Name = "PlayerSpawns"
 	playerSpawns.Parent = newMap
-
-	local props = Instance.new("Folder")
-	props.Name = "Props"
-	props.Parent = newMap
 
 	local gravity = 80
 
@@ -165,21 +149,17 @@ local function Convert(oldMap: Instance): ModuleScript | string
 	if workspaceFolder then
 		local actionFolder = workspaceFolder:FindFirstChild("Action")
 		if actionFolder then
-			for _, v in actionFolder:GetChildren() do
-				v:Clone().Parent = dynamicMap
-			end
+			actionFolder:Clone().Parent = dynamicMap
 		end
 
 		local doorsFolder = workspaceFolder:FindFirstChild("Doors")
 		if doorsFolder then
-			ConvertDoorsFolder(doorsFolder, doors)
+			ConvertDoorsFolder(doorsFolder, dynamicMap)
 		end
 
 		local boundsFolder = workspaceFolder:FindFirstChild("Bounds")
 		if boundsFolder then
-			for _, v in boundsFolder:GetChildren() do
-				v:Clone().Parent = bounds
-			end
+			boundsFolder:Clone().Parent = staticMap
 		end
 
 		local mapFolder = workspaceFolder:FindFirstChild("Map")
@@ -191,12 +171,12 @@ local function Convert(oldMap: Instance): ModuleScript | string
 
 		local propsFolder = workspaceFolder:FindFirstChild("Props")
 		if propsFolder then
-			ConvertPropsFolder(propsFolder, props)
+			ConvertPropsFolder(propsFolder, dynamicMap)
 		end
 
 		local itemsFolder = workspaceFolder:FindFirstChild("Items")
 		if itemsFolder then
-			ConvertItemsFolder(itemsFolder, itemSpawns, ammoSpawns)
+			ConvertItemsFolder(itemsFolder, dynamicMap)
 		end
 
 		local gravityAttr = workspaceFolder:GetAttribute("Gravity")
@@ -220,19 +200,7 @@ local function Convert(oldMap: Instance): ModuleScript | string
 		customItemsString = ConvertCustomItems(customItems, staticMap) or "{}"
 	end
 
-	local interactablesFolder = Instance.new("Folder")
-	interactablesFolder.Name = "Interactables"
-	interactablesFolder.Parent = newMap
-
-	local interactablesString = ConvertInteractables(newMap, doors, interactablesFolder) or "{}"
-
-	local futureLightingModifiers = Instance.new("Folder")
-	futureLightingModifiers.Name = "FutureLightingModifiers"
-	futureLightingModifiers.Parent = newMap
-
-	local windows = Instance.new("Folder")
-	windows.Name = "Windows"
-	windows.Parent = newMap
+	local interactablesString = ConvertInteractables(newMap) or "{}"
 
 	for _, v in newMap:GetDescendants() do
 		if v:IsA("Script") or v:IsA("LocalScript") or v:IsA("ModuleScript") then

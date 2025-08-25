@@ -16,7 +16,7 @@ local function ConvertCustomItems(customItems: Instance, staticMap: Folder): str
 				worldModel = worldModel:Clone()
 				worldModel.Name = item.Name
 				worldModel.Parent = staticMap
-				itemDefinition.Model = {__CodifyCode = `script.StaticMap["{worldModel.Name}"]`}
+				itemDefinition.Model = {__CodifyCode = `script.Static["{worldModel.Name}"]`}
 			else
 				warn(`Unknown WorldModel type {worldModel.ClassName} for Custom Item {item.Name}`)
 			end

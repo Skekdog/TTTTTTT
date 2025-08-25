@@ -22,9 +22,7 @@ Toolbar.OnClick = function()
 
 	local waypoint = ChangeHistoryService:TryBeginRecording("TTTTTTT Conversion")
 
-	local result = Convert(folder)
-
-	local success = typeof(result) ~= "string"
+	local success, result: ModuleScript | string = pcall(Convert, folder)
 	if not success then
 		warn(result)
 	end

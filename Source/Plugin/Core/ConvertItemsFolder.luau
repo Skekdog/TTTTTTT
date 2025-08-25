@@ -15,18 +15,18 @@ local nameMap = {
 	["M4A1 Carbine"] = "Assault Rifle",
 }
 
-local function ConvertItemsFolder(itemsFolder: Instance, itemSpawns: Folder, ammoSpawns: Folder): ()
-	for _, v in itemsFolder:GetChildren() do
-		local newName = nameMap[v.Name] or v.Name
-		local newObject = v:Clone()
-		newObject.Name = newName
-
-		if v.Name:split(" ")[2] == "Ammo" then
-			newObject.Parent = ammoSpawns
+local function ConvertItemsFolder(itemsFolder: Instance, dynamic: Folder): ()
+	itemsFolder = itemsFolder:Clone()
+	for _, item in itemsFolder:GetChildren() do
+		if item.Name:split(" ")[2] == "Ammo" then
+			item:AddTag("AmmoBox")
 		else
-			newObject.Parent = itemSpawns
+			item:AddTag("Item")
 		end
+		local newName = nameMap[item.Name] or item.Name
+		item.Name = newName
 	end
+	itemsFolder.Parent = dynamic
 end
 
 return ConvertItemsFolder
