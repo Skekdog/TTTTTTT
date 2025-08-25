@@ -6,15 +6,21 @@ local function ConvertDoorsFolder(doorsFolder: Instance, dynamic: Folder): ()
 			continue
 		end
 
+		local root = model.PrimaryPart
+		if not root then
+			warn(`Door {model.Name} has no PrimaryPart`)
+			continue
+		end
+
 		local doorConfig = model:FindFirstChild("DoorConfig")
 		if doorConfig then
 			for i, v in doorConfig:GetAttributes() do
-				model:SetAttribute(i, v)
+				root:SetAttribute(i, v)
 			end
 
 			local sounds = doorConfig:FindFirstChild("Sounds")
 			if sounds then
-				sounds.Parent = model
+				sounds.Parent = root
 			end
 		end
 
