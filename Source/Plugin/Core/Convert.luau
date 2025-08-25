@@ -132,6 +132,13 @@ local function Convert(oldMap: Instance): ModuleScript
 		terrainRegion.Parent = newMap
 	end
 
+	if oldTerrain then
+		local clouds = oldTerrain:FindFirstChildOfClass("Clouds")
+		if clouds then
+			clouds:Clone().Parent = terrainRegion or Instance.new("TerrainRegion", newMap)
+		end
+	end
+
 	local dynamicMap = Instance.new("Folder")
 	dynamicMap.Name = "Dynamic"
 	dynamicMap.Parent = newMap
