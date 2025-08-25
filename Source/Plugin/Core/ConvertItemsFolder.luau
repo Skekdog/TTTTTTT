@@ -23,6 +23,11 @@ local function ConvertItemsFolder(itemsFolder: Instance, dynamic: Folder): ()
 		else
 			item:AddTag("Item")
 		end
+
+		if item:IsA("BasePart") then
+			item.Anchored = false
+		end
+
 		local newName = nameMap[item.Name] or item.Name
 		item.Name = newName
 	end
