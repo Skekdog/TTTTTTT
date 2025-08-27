@@ -43,8 +43,6 @@ local map: Types.MapDefinition = {
 	AvailableItems = [CUSTOMITEMS],
 	AvailableAmmo = {},
 
-	InteractableDefinitions = [INTERACTABLES],
-
 	Map = script,
 }
 
@@ -208,8 +206,6 @@ local function Convert(oldMap: Instance): ModuleScript
 		customItemsString = ConvertCustomItems(customItems, staticMap) or "{}"
 	end
 
-	local interactablesString = ConvertInteractables(newMap) or "{}"
-
 	for _, v in newMap:GetDescendants() do
 		if v:IsA("Script") or v:IsA("LocalScript") or v:IsA("ModuleScript") then
 			ConvertScript(v)
@@ -225,7 +221,6 @@ local function Convert(oldMap: Instance): ModuleScript
 		:gsub("%[TERRAIN%]", terrainString)
 		:gsub("%[CUSTOMITEMS%]", customItemsString)
 		:gsub("%[GRAVITY%]", gravity)
-		:gsub("%[INTERACTABLES%]", interactablesString)
 	newMap.Source = mapScript
 
 	newMap.Name = name
