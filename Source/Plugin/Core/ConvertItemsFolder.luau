@@ -26,6 +26,7 @@ local function ConvertItemsFolder(itemsFolder: Instance, dynamic: Folder): ()
 
 		if item:IsA("BasePart") then
 			item.Anchored = false
+			item.CanCollide = true
 		end
 
 		local newName = nameMap[item.Name] or item.Name
