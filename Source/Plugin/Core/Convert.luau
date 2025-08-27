@@ -43,6 +43,8 @@ local map: Types.MapDefinition = {
 	AvailableItems = [CUSTOMITEMS],
 	AvailableAmmo = {},
 
+	InteractableDefinitions = {},
+
 	Map = script,
 }
 
