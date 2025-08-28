@@ -42,6 +42,8 @@ local map: Types.MapDefinition = {
 	AvailableItems = [CUSTOMITEMS],
 	AvailableAmmo = {},
 
+	[CLOUDSSETTINGS]
+
 	InteractableDefinitions = {},
 
 	Map = script,
@@ -131,11 +133,21 @@ local function Convert(oldMap: Instance): ModuleScript
 		terrainRegion.Parent = newMap
 	end
 
+	local cloudsSettings = ""
+
 	if oldTerrain then
 		local clouds = oldTerrain:FindFirstChildOfClass("Clouds")
 		if clouds then
-			clouds:Clone().Parent = terrainRegion or Instance.new("TerrainRegion", newMap)
+			cloudsSettings = Codify({
+				Cover = clouds.Cover,
+				Density = clouds.Density,
+				Color = clouds.Color,
+			}) or ""
 		end
+	end
+
+	if cloudsSettings ~= "" then
+		cloudsSettings = cloudsSettings .. ","
 	end
 
 	local dynamicMap = Instance.new("Folder")
@@ -222,6 +234,7 @@ local function Convert(oldMap: Instance): ModuleScript
 		:gsub("%[TERRAIN%]", terrainString)
 		:gsub("%[CUSTOMITEMS%]", customItemsString)
 		:gsub("%[GRAVITY%]", gravity)
+		:gsub("%[CLOUDSSETTINGS%]", cloudsSettings)
 	newMap.Source = mapScript
 
 	newMap.Name = name
