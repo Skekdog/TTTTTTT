@@ -15,7 +15,7 @@ local function ConvertDoorsFolder(doorsFolder: Instance, dynamic: Folder): ()
 		local doorConfig = model:FindFirstChild("DoorConfig")
 		if doorConfig then
 			for i, v in doorConfig:GetAttributes() do
-				model:SetAttribute(i, v)
+				model:SetAttribute(i:gsub("_", ""), v)
 			end
 
 			local sounds = doorConfig:FindFirstChild("Sounds")
