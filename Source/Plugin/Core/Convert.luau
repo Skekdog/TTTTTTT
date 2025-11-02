@@ -1,68 +1,20 @@
-local Codify = require("../../Lib/Codify")
 local ConvertBoundsFolder = require("./ConvertBoundsFolder")
-local ConvertCustomItems = require("./ConvertCustomItems")
 local ConvertDoorsFolder = require("./ConvertDoorsFolder")
 local ConvertItemsFolder = require("./ConvertItemsFolder")
 local ConvertPropsFolder = require("./ConvertPropsFolder")
 local ConvertScript = require("./ConvertScript")
 local ConvertSpawnsFolder = require("./ConvertSpawnsFolder")
 
-local mapScriptTemplate = [[
---!strict
-local Types = require(game:GetService("ReplicatedStorage").Shared.RoundRule.Types)
-local map: Types.MapDefinition = {
-	Name = [MAPNAME],
-	Description = "No description",
-	Authors = [AUTHORS],
-
-	Extras = {
-		CompatibilityMode = true
-	},
-
-	MapIcons = {
-		["16:9"] = [ICON],
-	},
-
-	Gravity = [GRAVITY],
-
-	LightingSettings = {
-		[LIGHTING]
-	},
-
-	FutureLightingSettings = {},
-
-	WaterSettings = {
-		[WATER]
-	},
-
-	TerrainColors = {
-		[TERRAIN]
-	},
-
-	AvailableItems = [CUSTOMITEMS],
-	AvailableAmmo = {},
-
-	[CLOUDSSETTINGS]
-
-	InteractableDefinitions = {},
-
-	Map = script,
-}
-
-return map
-]]
-
-local function Convert(oldMap: Instance): ModuleScript
+local function Convert(oldMap: Instance): Instance
 	local oldFolder = if oldMap:IsA("Folder") then oldMap else oldMap:FindFirstChildOfClass("Folder")
 	if not oldFolder then
 		error("Could not find map folder")
 	end
 
-	local newMap = Instance.new("ModuleScript")
+	local newMap = Instance.new("Folder")
+	newMap.Name = oldFolder.Name
 
-	local name = oldFolder.Name
 	local creators = oldFolder:GetAttribute("Creator")
-
 	if typeof(creators) ~= "string" then
 		error(if creators == nil then "Creator attribute not found" else "Creator attribute is not a string")
 	end
@@ -72,21 +24,18 @@ local function Convert(oldMap: Instance): ModuleScript
 		error(if icon == nil then "Icon attribute not found" else "Icon attribute is not a string")
 	end
 
-	local newLighting = Instance.new("Folder")
-	newLighting.Name = "Lighting"
+	newMap:SetAttribute("Authors", creators)
+	newMap:SetAttribute("Icon", icon)
+	newMap:SetAttribute("Description", "No description")
+
+	local newLighting = Instance.new("Configuration")
+	newLighting.Name = "LightingSettings"
 	newLighting.Parent = newMap
 
-	local lightingString = ""
 	local oldLighting = oldFolder:FindFirstChild("Lighting")
 	if oldLighting then
-		local isFirstIteration = true
 		for i, v in oldLighting:GetAttributes() do
-			local valueString = Codify(v)
-			if not valueString then
-				warn(`Unknown Lighting attribute type {i}: {v}`)
-			end
-			lightingString ..= `{if not isFirstIteration then "\n		" else ""}["{i}"] = {valueString},`
-			isFirstIteration = false
+			newLighting:SetAttribute(i, v)
 		end
 
 		for _, v in oldLighting:GetChildren() do
@@ -94,28 +43,26 @@ local function Convert(oldMap: Instance): ModuleScript
 		end
 	end
 
-	local waterString = ""
-	local terrainString = ""
+	local newTerrainColors = Instance.new("Configuration")
+	newTerrainColors.Name = "TerrainColors"
+	newTerrainColors.Parent = newMap
+
+	local newWaterSettings = Instance.new("Configuration")
+	newWaterSettings.Name = "WaterSettings"
+	newWaterSettings.Parent = newMap
+
 	local oldTerrain = oldFolder:FindFirstChild("Terrain")
 	if oldTerrain then
-		local isFirstWater, isFirstTerrainColor = true, true
 		for i, v in oldTerrain:GetAttributes() do
-			local valueString = Codify(v)
-			if not valueString then
-				warn(`Unknown Terrain attribute type {i}: {v}`)
-			end
-
 			if i:sub(1, 5) == "Water" then
-				waterString ..= `{if not isFirstWater then "\n		" else ""}["{i}"] = {valueString},`
-				isFirstWater = false
+				newWaterSettings:SetAttribute(i, v)
 			else
-				terrainString ..= `{if not isFirstTerrainColor then "\n		" else ""}["{i}"] = {valueString},`
-				isFirstTerrainColor = false
+				newTerrainColors:SetAttribute(i, v)
 			end
 		end
 	end
 
-	local newMaterials = Instance.new("Folder")
+	local newMaterials = Instance.new("Configuration")
 	newMaterials.Name = "MaterialVariants"
 	newMaterials.Parent = newMap
 
@@ -133,21 +80,11 @@ local function Convert(oldMap: Instance): ModuleScript
 		terrainRegion.Parent = newMap
 	end
 
-	local cloudsSettings = ""
-
 	if oldTerrain then
 		local clouds = oldTerrain:FindFirstChildOfClass("Clouds")
 		if clouds then
-			cloudsSettings = Codify({
-				Cover = clouds.Cover,
-				Density = clouds.Density,
-				Color = clouds.Color,
-			}) or ""
+			clouds:Clone().Parent = newMap
 		end
-	end
-
-	if cloudsSettings ~= "" then
-		cloudsSettings = cloudsSettings .. ","
 	end
 
 	local dynamicMap = Instance.new("Folder")
@@ -161,8 +98,6 @@ local function Convert(oldMap: Instance): ModuleScript
 	local playerSpawns = Instance.new("Folder")
 	playerSpawns.Name = "PlayerSpawns"
 	playerSpawns.Parent = newMap
-
-	local gravity = 80
 
 	local workspaceFolder = oldFolder:FindFirstChild("Workspace")
 	if workspaceFolder then
@@ -200,23 +135,26 @@ local function Convert(oldMap: Instance): ModuleScript
 
 		local gravityAttr = workspaceFolder:GetAttribute("Gravity")
 		if typeof(gravityAttr) == "number" then
-			gravity = gravityAttr
+			newMap:SetAttribute("Gravity", gravityAttr)
 		elseif gravityAttr ~= nil then
 			warn(`Unknown Gravity attribute type: {gravityAttr}`)
 		end
 	end
-
-	gravity = Codify(gravity) or "80"
 
 	local spawnsFolder = oldFolder:FindFirstChild("Spawns")
 	if spawnsFolder then
 		ConvertSpawnsFolder(spawnsFolder, playerSpawns)
 	end
 
-	local customItemsString = "{}"
-	local customItems = oldFolder:FindFirstChild("CustomItems")
-	if customItems then
-		customItemsString = ConvertCustomItems(customItems, staticMap) or "{}"
+	local oldCustomItems = oldFolder:FindFirstChild("CustomItems")
+	if oldCustomItems then
+		local customItems = Instance.new("Configuration")
+		customItems.Name = "ItemDefinitions"
+
+		oldCustomItems.Name = "Old"
+		oldCustomItems.Parent = customItems
+
+		customItems.Parent = newMap
 	end
 
 	for _, v in newMap:GetDescendants() do
@@ -225,19 +163,6 @@ local function Convert(oldMap: Instance): ModuleScript
 		end
 	end
 
-	local mapScript = mapScriptTemplate
-		:gsub("%[MAPNAME%]", Codify(name) or name)
-		:gsub("%[AUTHORS%]", Codify(creators) or creators)
-		:gsub("%[ICON%]", Codify(icon) or icon)
-		:gsub("%[LIGHTING%]", lightingString)
-		:gsub("%[WATER%]", waterString)
-		:gsub("%[TERRAIN%]", terrainString)
-		:gsub("%[CUSTOMITEMS%]", customItemsString)
-		:gsub("%[GRAVITY%]", gravity)
-		:gsub("%[CLOUDSSETTINGS%]", cloudsSettings)
-	newMap.Source = mapScript
-
-	newMap.Name = name
 	newMap.Parent = oldMap.Parent
 
 	return newMap
