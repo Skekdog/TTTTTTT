@@ -27,6 +27,7 @@ local function Convert(oldMap: Instance): Instance
 	newMap:SetAttribute("Authors", creators)
 	newMap:SetAttribute("Icon", icon)
 	newMap:SetAttribute("Description", "No description")
+	newMap:SetAttribute("CompatiblityMode", "TT2")
 
 	local newLighting = Instance.new("Configuration")
 	newLighting.Name = "LightingSettings"
