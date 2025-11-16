@@ -3,7 +3,7 @@
 
 ![Class Convert](./Assets/TTTTTTT.png)
 
-A Roblox Studio plugin that converts TT2 maps into TYT (TT3) maps. Obviously not perfect.
+A Roblox Studio plugin that converts TT2 maps into Traitor! (TT3) maps. Not perfect.
 
 Especially lacking:
 - Custom items
