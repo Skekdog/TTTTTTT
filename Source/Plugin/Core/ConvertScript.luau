@@ -12,10 +12,8 @@ local function convertCollisionGroups(source: string): string
 end
 
 local baseItemNameRemap: {[string]: string} = {
-	["Five-seveN"] = "Pistol",
-	["M4A1 Carbine"] = "Assault Rifle",
-	["G18"] = "Glock",
-	["M11"] = "SMG",
+	["Five-seveN"] = "Five-Seven",
+	["M4A1 Carbine"] = "M4A1",
 	["M1014"] = "XM1014",
 	["M249 SAW"] = "HUGE",
 	["Desert Eagle"] = "Deagle",
