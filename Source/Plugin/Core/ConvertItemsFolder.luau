@@ -1,18 +1,16 @@
 
 local nameMap = {
-	["High-Cal Ammo"] = "Deagle",
-	["Mil-Spec Ammo"] = "9mm",
+	["High-Cal Ammo"] = "High-Cal",
+	["Mil-Spec Ammo"] = "Mil-Spec",
 	["Rifle Ammo"] = "Rifle",
-	["SMG Ammo"] = "SMG1",
+	["SMG Ammo"] = "Sub-Spec",
 	["Shotgun Ammo"] = "Shotgun",
 
 	["Desert Eagle"] = "Deagle",
-	["Five-seveN"] = "Pistol",
-	["G18"] = "Glock",
+	["Five-seveN"] = "Five-Seven",
 	["M1014"] = "XM1014",
-	["M11"] = "SMG",
 	["M249 SAW"] = "HUGE",
-	["M4A1 Carbine"] = "Assault Rifle",
+	["M4A1 Carbine"] = "M4A1",
 }
 
 local function ConvertItemsFolder(itemsFolder: Instance, dynamic: Folder): ()
